@@ -3,7 +3,7 @@ import AuthGate from "../components/AuthGate";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useMemo, useState } from "react";
 import { auth, db } from "../lib/firebase";
-import useRoles from "../hooks/useRoles";
+import useRoles from "../lib/hooks/useRoles";
 import { ref, onValue, update, set } from "firebase/database";
 import AuthButton from "../components/AuthButton";
 import BackToPortalButton from "../components/BackToPortalButton";
@@ -713,3 +713,4 @@ export default function Cronograma() {
     to   { opacity: 1; transform: translateY(0); }
   }
 `}</style>
+
