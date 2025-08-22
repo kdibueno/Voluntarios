@@ -4,7 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { auth, db } from "../lib/firebase";
 import { ref, onValue } from "firebase/database";
-import useRoles from "../hooks/useRoles";
+import useRoles from "../lib/hooks/useRoles";
 import AuthButton from "../components/AuthButton";
 import { useRouteTransition } from "../components/RouteTransitions";
 import Image from "next/image";
@@ -347,3 +347,4 @@ export default function Portal() {
     </AuthGate>
   );
 }
+
