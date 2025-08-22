@@ -6,7 +6,7 @@ import { auth, db } from "../lib/firebase";
 import AuthButton from "../components/AuthButton";
 import CameraCard from "../components/CameraCard";
 import AuthGate from "../components/AuthGate";
-import useRoles from "../hooks/useRoles";
+import useRoles from "../lib/hooks/useRoles";
 import dynamic from "next/dynamic";
 import FloatingChat from "../components/FloatingChat";
 import BackToPortalButton from "../components/BackToPortalButton";
@@ -749,3 +749,4 @@ function AddCameraInline({ onAdd }) {
     </div>
   );
 }
+
