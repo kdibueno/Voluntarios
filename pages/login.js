@@ -9,6 +9,7 @@ import {
 import { ref, set, get } from "firebase/database";
 import { auth, db } from "../lib/firebase";
 import { DEFAULT_ROLES } from "../lib/roles";
+import useRoles from "../lib/hooks/useRoles";
 import Image from "next/image";
 import { useRouteTransition } from "../components/RouteTransitions";
 
@@ -342,3 +343,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
