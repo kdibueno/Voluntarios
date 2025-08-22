@@ -4,7 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useMemo, useState } from "react";
 import { auth, db } from "../lib/firebase";
 import { ref, onValue, update, remove } from "firebase/database";
-import useRoles from "../hooks/useRoles";
+import useRoles from "../lib/hooks/useRoles";
 import AuthButton from "../components/AuthButton";
 import Image from "next/image";
 import BackToPortalButton from "../components/BackToPortalButton";
@@ -357,3 +357,4 @@ export default function Admin() {
     </AuthGate>
   );
 }
+
