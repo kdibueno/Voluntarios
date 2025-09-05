@@ -22,7 +22,8 @@ const DAY_SLOTS = [
   { key: "diretorObs",      label: "Diretor(a) de Obs" },
   { key: "cam5Central",     label: "Câmera 5" },
   { key: "cam6LateralDir",  label: "Câmera 6" },
-/*{ key: "cam7LateralEsq",  label: "Câmera 7 - Lateral Esquerda" },*/
+  { key: "cam7LateralEsq",  label: "Câmera 7" },
+  { key: "cam8central",     label: "Câmera 8" },
   { key: "camMovel",        label: "Câmera Móvel" },
   { key: "liderApoio",      label: "Lider de Apoio" },
   { key: "apoio1",          label: "Apoio 1" },
@@ -63,7 +64,8 @@ const LEGEND = [
   { key: "diretorObs", label: "Diretor(a) de Obs" },
   { key: "cam5Central", label: "Câmera 5" },
   { key: "cam6LateralDir", label: "Câmera 6" },
- /* { key: "cam7LateralEsq", label: "Câmera 7" },*/
+  { key: "cam7LateralEsq", label: "Câmera 7" },
+  { key: "cam8aberta", label: "Câmera 8" },
   { key: "camMovel", label: "Câmera Móvel" },
   { key: "fotografo", label: "Fotografia" },
   { key: "diretorProjeção", label: "Projeção" },
