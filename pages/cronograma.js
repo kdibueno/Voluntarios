@@ -36,7 +36,7 @@ const DAY_SLOTS = [
 ];
 
 const GROUPS = {
-  transmissao: ['diretorCena','diretorObs','cam5Central','cam6LateralDir',/*'cam7LateralEsq'*/,'camMovel'],
+  transmissao: ['diretorCena','diretorObs','cam5Central','cam6LateralDir','cam7central','cam8central','camMovel'],
   fotografia: ['fotografo',],
   projecao: ['diretorProjeção'],
   apoio: ['liderApoio','apoio1','apoio2','apoio3','apoio4','apoio5'],
