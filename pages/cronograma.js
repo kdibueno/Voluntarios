@@ -477,7 +477,7 @@ function dayHasUser(dayKey, uid, shiftKey, groupKey) {
         <main className="max-w-7xl mx-auto px-4 py-5 space-y-4">
           {/* Legenda */}
           <div className="rounded-xl border border-white/15 bg-white/5 p-2 shadow-xl overflow-x-auto">
-            <div className="flex items-center gap-4 min-w-max">
+            <div className="flex items-center gap-3 min-w-max">
               <span className="text-[11px] text-gray-200 mr-1">Legenda:</span>
               {LEGEND.map((item) => {
                 const st = styleFor(item.key);
