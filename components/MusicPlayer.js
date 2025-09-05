@@ -11,14 +11,25 @@ const FallbackGenres = {
     { src: "/music/Infantil/Aline Barros - Dança do Pinguim.mp3", title: "Aline Barros - Dança do Pinguim", desc: "Faixa de exemplo" },
     { src: "/music/louvor/faixa2.mp3", title: "Louvor 2" },
   ],
+  louvor: [
+    { src: "/music/louvor/faixa1.mp3", title: "Louvor 1" },
+    { src: "/music/louvor/faixa2.mp3", title: "Louvor 2" },
+  ],
   instrumental: [
     { src: "/music/instrumental/faixa1.mp3", title: "Piano 1" },
     { src: "/music/instrumental/faixa2.mp3", title: "Piano 2" },
   ],
   kids: [{ src: "/music/kids/faixa1.mp3", title: "Kids 1" }],
 };
-const GENRE_LABEL = { louvor: "Louvor", instrumental: "Instrumental", kids: "Kids" };
-const DEFAULT_GENRE = "louvor";
+
+const GENRE_LABEL = {
+  Infantil: "Infantil",
+  louvor: "Louvor",
+  instrumental: "Instrumental",
+  kids: "Kids",
+};
+
+const DEFAULT_GENRE = ""; // ← começa sem nada selecionado
 
 /* ====== PORTAL ROOT ====== */
 function usePortalRoot() {
@@ -39,13 +50,13 @@ function usePortalRoot() {
 export default function MusicPlayer({
   // offsets para ficar NO CANTO DIREITO e logo ABAIXO do chat
   offsetRight = 8,       // px da borda direita
-  offsetBottom = 20,      // px da borda inferior
-  chatBubbleHeight = 56,  // altura do balão do chat (para não colidir)
+  offsetBottom = 20,     // px da borda inferior
+  chatBubbleHeight = 56, // altura do balão do chat (para não colidir)
 }) {
   const portalRoot = usePortalRoot();
 
   const [open, setOpen] = useState(false);
-  const [genre, setGenre] = useState(DEFAULT_GENRE);
+  const [genre, setGenre] = useState(DEFAULT_GENRE); // "" no início
   const [tracks, setTracks] = useState([]);
   const [current, setCurrent] = useState(0);
 
@@ -60,6 +71,20 @@ export default function MusicPlayer({
   useEffect(() => {
     let mounted = true;
     (async () => {
+      // sem gênero → não carrega nada
+      if (!genre) {
+        if (mounted) {
+          setTracks([]);
+          setCurrent(0);
+          setIsPlaying(false);
+          setCurTime(0);
+          setDuration(0);
+          // pausa se algo estiver tocando
+          try { audioRef.current?.pause(); } catch {}
+        }
+        return;
+      }
+
       try {
         const res = await fetch(`/music/${genre}/manifest.json`, { cache: "no-store" });
         if (res.ok) {
@@ -67,17 +92,26 @@ export default function MusicPlayer({
           if (mounted && Array.isArray(list) && list.length) {
             setTracks(list);
             setCurrent(0);
+            setIsPlaying(false);
+            setCurTime(0);
+            setDuration(0);
             return;
           }
         }
         if (mounted) {
           setTracks(FallbackGenres[genre] || []);
           setCurrent(0);
+          setIsPlaying(false);
+          setCurTime(0);
+          setDuration(0);
         }
       } catch {
         if (mounted) {
           setTracks(FallbackGenres[genre] || []);
           setCurrent(0);
+          setIsPlaying(false);
+          setCurTime(0);
+          setDuration(0);
         }
       }
     })();
@@ -120,32 +154,31 @@ export default function MusicPlayer({
 
   const curTrack = tracks[current] || null;
 
-async function handlePlayPause() {
-  const audio = audioRef.current;
-  if (!audio || !curTrack) return;
+  async function handlePlayPause() {
+    const audio = audioRef.current;
+    if (!audio || !curTrack) return; // sem faixa válida não faz nada
 
-  if (!audio.paused) {
-    // está tocando -> pausar sem resetar posição
-    audio.pause();
-    setIsPlaying(false);
-    return;
-  }
+    if (!audio.paused) {
+      audio.pause();
+      setIsPlaying(false);
+      return;
+    }
 
-  try {
-    // só dar play; nada de audio.load() aqui
-    await audio.play();
-    setIsPlaying(true);
-  } catch (err) {
-    console.warn("Falha ao tocar áudio:", err);
-    setIsPlaying(false);
+    try {
+      await audio.play();
+      setIsPlaying(true);
+    } catch (err) {
+      console.warn("Falha ao tocar áudio:", err);
+      setIsPlaying(false);
+    }
   }
-}
 
   function handlePrev() {
     if (!tracks.length) return;
     setCurrent((i) => (i - 1 + tracks.length) % tracks.length);
     setCurTime(0);
   }
+
   function handleNext() {
     if (!tracks.length) return;
     setCurrent((i) => (i + 1) % tracks.length);
@@ -189,7 +222,11 @@ async function handlePlayPause() {
 
   const ui = (
     <>
-      <audio ref={audioRef} src={curTrack?.src || undefined} preload="metadata" />
+      <audio
+        ref={audioRef}
+        src={genre && curTrack?.src ? curTrack.src : undefined}
+        preload="metadata"
+      />
 
       {/* FAB: bolinha menor com animações quando tocando e fechado */}
       <button
@@ -248,8 +285,10 @@ async function handlePlayPause() {
                   setGenre(e.target.value);
                   setIsPlaying(false);
                   setCurTime(0);
+                  try { audioRef.current?.pause(); } catch {}
                 }}
               >
+                <option value="">Selecione…</option>
                 {Object.keys(FallbackGenres).map((g) => (
                   <option key={g} value={g}>
                     {GENRE_LABEL[g] || g}
@@ -261,14 +300,30 @@ async function handlePlayPause() {
 
           <div className="p-4 space-y-3">
             <div className="min-h-[40px]">
-              <div className="text-sm font-medium text-white truncate">{curTrack?.title || "—"}</div>
+              <div className="text-sm font-medium text-white truncate">
+                {curTrack?.title || (genre ? "—" : "Selecione um gênero")}
+              </div>
               <div className="text-[11px] text-gray-400 truncate">
-                {curTrack?.desc || (curTrack?.src ? curTrack.src.split("/").pop() : "Selecione um gênero e toque")}
+                {curTrack?.desc ||
+                  (curTrack?.src
+                    ? curTrack.src.split("/").pop()
+                    : genre
+                      ? "Selecione uma faixa e toque"
+                      : "Nenhum gênero selecionado")}
               </div>
             </div>
 
             <div>
-              <input type="range" min={0} max={100} step={0.5} value={progress} onChange={onSeek} className="w-full accent-emerald-500" />
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={0.5}
+                value={progress}
+                onChange={onSeek}
+                className="w-full accent-emerald-500"
+                disabled={!curTrack}
+              />
               <div className="flex items-center justify-between text-[10px] text-gray-400 mt-1">
                 <span>{fmtTime(curTime)}</span>
                 <span>{fmtTime(duration)}</span>
@@ -276,13 +331,23 @@ async function handlePlayPause() {
             </div>
 
             <div className="flex items-center justify-center gap-2">
-              <button onClick={handlePrev} className="h-8 w-8 rounded-lg bg-white/10 hover:bg-white/20 ring-1 ring-white/10 grid place-items-center" title="Anterior">
+              <button
+                onClick={handlePrev}
+                disabled={!curTrack}
+                className={`h-8 w-8 rounded-lg ring-1 ring-white/10 grid place-items-center ${
+                  curTrack ? "bg-white/10 hover:bg-white/20" : "bg-white/5 opacity-50 cursor-not-allowed"
+                }`}
+                title="Anterior"
+              >
                 <SkipBack className="w-4 h-4 text-white" />
               </button>
 
               <button
                 onClick={handlePlayPause}
-                className="h-9 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-600 ring-1 ring-black/20 text-white font-medium"
+                disabled={!curTrack}
+                className={`h-9 px-3 rounded-lg ring-1 ring-black/20 text-white font-medium ${
+                  curTrack ? "bg-emerald-700 hover:bg-emerald-600" : "bg-emerald-700/50 opacity-60 cursor-not-allowed"
+                }`}
                 title={isPlaying ? "Pausar" : "Reproduzir"}
               >
                 <div className="flex items-center gap-1.5">
@@ -291,7 +356,14 @@ async function handlePlayPause() {
                 </div>
               </button>
 
-              <button onClick={handleNext} className="h-8 w-8 rounded-lg bg-white/10 hover:bg-white/20 ring-1 ring-white/10 grid place-items-center" title="Próxima">
+              <button
+                onClick={handleNext}
+                disabled={!curTrack}
+                className={`h-8 w-8 rounded-lg ring-1 ring-white/10 grid place-items-center ${
+                  curTrack ? "bg-white/10 hover:bg-white/20" : "bg-white/5 opacity-50 cursor-not-allowed"
+                }`}
+                title="Próxima"
+              >
                 <SkipForward className="w-4 h-4 text-white" />
               </button>
             </div>
@@ -299,7 +371,10 @@ async function handlePlayPause() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setMuted((m) => !m)}
-                className="h-8 w-8 rounded-lg bg-white/10 hover:bg-white/20 ring-1 ring-white/10 grid place-items-center"
+                disabled={!genre}
+                className={`h-8 w-8 rounded-lg ring-1 ring-white/10 grid place-items-center ${
+                  genre ? "bg-white/10 hover:bg-white/20" : "bg-white/5 opacity-50 cursor-not-allowed"
+                }`}
                 title={muted ? "Ativar som" : "Silenciar"}
               >
                 {muted ? <VolumeX className="w-4 h-4 text-white" /> : <Volume2 className="w-4 h-4 text-white" />}
@@ -317,6 +392,7 @@ async function handlePlayPause() {
                   if (v === 0 && !muted) setMuted(true);
                 }}
                 className="flex-1 accent-emerald-500"
+                disabled={!genre}
               />
             </div>
           </div>
