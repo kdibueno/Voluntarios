@@ -1,4 +1,4 @@
-// pages/cronograma.js
+
 import AuthGate from "../components/AuthGate";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useMemo, useRef, useState } from "react";
