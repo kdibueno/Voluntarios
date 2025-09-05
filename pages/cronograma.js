@@ -47,7 +47,8 @@ const SLOT_STYLES = {
   diretorObs:      { bg: "bg-orange-500/50",  ring: "ring-orange-500/30",  label: "text-white",     chip: "bg-orange-600/50 text-white",   border: "border-orange-500/30" },
   cam5Central:     { bg: "bg-sky-500/30",     ring: "ring-sky-500/30",     label: "text-white",     chip: "bg-sky-600/50 text-white",      border: "border-sky-500/30" },
   cam6LateralDir:  { bg: "bg-sky-500/30",     ring: "ring-sky-500/30",     label: "text-white",     chip: "bg-sky-600/50 text-white",      border: "border-sky-500/30" },
-/* cam7LateralEsq:  { bg: "bg-sky-500/10",     ring: "ring-sky-500/30",     label: "text-sky-200",     chip: "bg-sky-600/80 text-white",      border: "border-sky-500/30" },*/
+  cam7central:     { bg: "bg-sky-500/30",     ring: "ring-sky-500/30",     label: "text-white",     chip: "bg-sky-600/50 text-white",      border: "border-sky-500/30" },
+  cam8central:     { bg: "bg-sky-500/30",     ring: "ring-sky-500/30",     label: "text-white",     chip: "bg-sky-600/50 text-white",      border: "border-sky-500/30" },
   camMovel:        { bg: "bg-sky-500/30",     ring: "ring-sky-500/30",     label: "text-white",     chip: "bg-sky-600/50 text-white",      border: "border-sky-500/30" },
   liderApoio:      { bg: "bg-fuchsia-500/30", ring: "ring-fuchsia-500/30", label: "text-white",     chip: "bg-fuchsia-600/60 text-white",  border: "border-fuchsia-500/30" },
   apoio1:          { bg: "bg-fuchsia-500/10", ring: "ring-fuchsia-500/30", label: "text-white",     chip: "bg-fuchsia-600/80 text-white",  border: "border-fuchsia-500/30" },
